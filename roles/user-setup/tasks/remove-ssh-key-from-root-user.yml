@@ -1,0 +1,6 @@
+---
+- name: Remove ssh key from root user profile after you're done
+  authorized_key: 
+    user: root
+    state: absent
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

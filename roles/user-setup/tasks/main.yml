@@ -1,0 +1,10 @@
+---
+# tasks file for user_setup
+# Add nulli user, add sudoer config, and remove ssh key from root user
+# as the root authorization was intended to be temporary.
+
+- include: add-and-config-functional-user.yml
+  when: true
+
+- include: remove-ssh-key-from-root-user.yml
+  when: true

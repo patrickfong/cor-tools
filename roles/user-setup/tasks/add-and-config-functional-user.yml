@@ -1,0 +1,28 @@
+---
+- name: Define sudoer group name for RedHat family of OSes
+  set_fact:
+    sudoer_group: wheel
+  when: ansible_os_family == "RedHat"
+
+- name: Determine sudoer group name for Debian family of OSes
+  set_fact:
+    sudoer_group: sudoer
+  when: ansible_os_family == "Debian"
+
+- debug: msg="Using group name {{ sudoer_group }}" 
+
+- name: Creating users "{{ uusername }}" with sudoer access 
+  user: name={{ uusername }} password={{ upassword | password_hash('sha512') }} groups={{ sudoer_group }} append=yes
+
+- name: Copy sudoer.d configuration  
+  template:
+    src: "username.j2"
+    dest: "/etc/sudoers.d/{{ uusername }}"
+    validate: 'visudo -cf %s'
+
+- name: Add ssh key from root user profile
+  authorized_key:
+    user: "{{ uusername }}"
+    state: present
+    manage_dir: yes
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

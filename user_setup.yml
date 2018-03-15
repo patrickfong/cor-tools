@@ -1,0 +1,11 @@
+---
+# This script can be run after the current user's public key are added to the remote 
+# server's root user's authorized_keys by manual process.  The script 
+# remote_keys_setup.sh was crafted used for this purpose.
+
+- name: Create functional user as a sudoer
+  become: yes
+  hosts: forgeRockServers 
+  
+  roles:
+  - user-setup
